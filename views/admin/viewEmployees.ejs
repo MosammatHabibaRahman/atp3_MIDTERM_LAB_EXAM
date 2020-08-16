@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>All Employee List</title>
-	<link rel="stylesheet" type="text/css" href="abc/style.css">
+	<title>View Employees</title>
 </head>
 <body>
 	
@@ -10,7 +9,7 @@
   <a href="/logout">Logout</a>
 	
 	<center>
-		<h3>All Employees</h3>
+		<h1>All Employees</h1>
 		<table border="1" style="width:800px">
 			<tr>
 				<th>NAME</th>
@@ -21,11 +20,11 @@
 			</tr>
       <%for(var i=0; i<list.length; i++) { %>
 			<tr>
-				<th><%= list[i].name %></th>
-				<th><%= list[i].phone %></th>
-				<th><%= list[i].username %></th>
-        <th><%= list[i].password %></th>
-				<th><a href="/admin/update">UPDATE</a>| <a href="/admin/delete">DELETE</a></th>
+				<td><center><%= list[i].name %></center></td>
+				<td><center><%= list[i].phone %></center></td>
+				<td><center><%= list[i].username %></center></td>
+        <td><center><%= list[i].password %></center></td>
+				<td><center><a href="/admin/update/<%=list[i].id%>">UPDATE</a>| <a href="/admin/delete/<%=list[i].id%>">DELETE</a></center></td>
 			</tr>
       <% } %>
 		</table>

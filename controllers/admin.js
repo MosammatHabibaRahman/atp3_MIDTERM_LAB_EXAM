@@ -76,21 +76,57 @@ router.get('/viewEmployees',function (req,res){
 
 router.get('/update/:id',function (req,res){
     var id = req.params.id;
-	console.log(id);
 	empModel.get(id, function(result){
+		console.log(result);
 		if(result)
 		{
-			res.render('admin/update',{info: result});
+			res.render('admin/update',{emp: result});
 		}
 		else
 		{
 			res.send("Something went wrong! <a href="+"/admin/viewEmployees"+">Back</a>");
 		}
-	});});
+	});
+});
+
+router.post('/update/:id',function (req,res){
+    var emp = {
+		name: req.body.name,
+		phone: req.body.phone,
+		username: req.body.username,
+		password: req.body.password,
+		id: req.params.id
+	};
+
+	if(req.body.cancel)
+    {
+        res.redirect('/admin/viewEmployees');
+    }
+	else
+	{
+		if(emp.name=="" || emp.phone=="" || emp.username=="" || emp.password=="")
+		{
+			res.send("Fields cannot be empty! <a href="+"/admin/viewEmployees"+">Please Try Again</a>");
+		}
+		else
+		{
+			empModel.update(emp, function(status){
+				console.log(status);
+				if(status)
+				{
+					res.redirect('/admin/viewEmployees');
+				}
+				else
+				{
+					res.send("Something went wrong! <a href="+"/admin/viewEmployees"+">Back</a>");
+				}
+			});
+		}
+	}
+});
 
 router.get('/delete/:id', function(req, res){
 	var id = req.params.id;
-	console.log(id);
 	empModel.get(id, function(result){
 		if(result)
 		{
