@@ -3,7 +3,7 @@ var db = require('./db');
 module.exports ={
 
 	validate: function(user, callback){
-		var sql = "select * from admin where username=? and password=?";
+		var sql = "select * from employee where username=? and password=?";
 		db.getResults(sql, [user.username, user.password], function(result){
 			if(result.length > 0){
 				callback(result[0]);
@@ -13,8 +13,20 @@ module.exports ={
 		});
 	},
 
-	/*get: function(id, callback){
-		var sql = "select * from admin where id=?";
+	insert: function(user, callback){
+		var sql = "insert into employee values(?, ?, ?, ?, ?)";
+
+		db.execute(sql, ['', user.name, user.phone, user.username,user.password], function(status){
+			if(status){
+				callback(true);
+			}else{
+				callback(false);
+			}
+		});
+	},
+
+	get: function(id, callback){
+		var sql = "select * from employee where id=?";
 		db.getResults(sql, [id], function(result){
 			if(result.length > 0){
 				callback(result[0]);
@@ -25,24 +37,12 @@ module.exports ={
 	},
 
 	getAll: function(callback){
-		var sql = "select * from admin";
+		var sql = "select * from employee";
 		db.getResults(sql, null,  function(result){
 			if(result.length > 0){
 				callback(result);
 			}else{
 				callback([]);
-			}
-		});
-	},
-
-	insert: function(user, callback){
-		var sql = "insert into user values(?, ?, ?, ?)";
-
-		db.execute(sql, ['', user.uname, user.password, user.type], function(status){
-			if(status){
-				callback(true);
-			}else{
-				callback(false);
 			}
 		});
 	},
@@ -67,5 +67,5 @@ module.exports ={
 				callback(false);
 			}
 		});
-	}*/
+	}
 }

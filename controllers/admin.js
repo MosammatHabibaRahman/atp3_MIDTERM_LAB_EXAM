@@ -1,5 +1,6 @@
 var express = require('express');
-//var adminModel = require.main.require('./models/adminModel');
+var adminModel = require('../models/adminModel');
+var empModel = require('../models/empModel');
 var router = express.Router();
 
 router.get('*',function (req,res,next){
@@ -14,7 +15,6 @@ router.get('*',function (req,res,next){
 });
 
 router.get('/',function (req,res){
-	console.log(req.session.aid);
     res.render('admin/index');
 });
 
@@ -23,18 +23,55 @@ router.get('/addEmployee',function (req,res){
 });
 
 router.post('/addEmployee',function (req,res){
-    if(req.body.cancel)
+
+	var emp = {
+		name: req.body.name,
+		phone: req.body.phone,
+		username: req.body.username,
+		password: req.body.password
+	};
+
+	console.log(emp);
+	if(req.body.cancel)
     {
         res.redirect('/admin');
     }
-    else
-    {
-        res.send('Submitted!');
-    }
+	else
+	{
+		if(emp.name=="" || emp.phone=="" || emp.username=="" || emp.password=="")
+		{
+			res.send("Fields cannot be empty! <a href="+"/admin/addEmployee"+">Please Try Again</a>");
+		}
+		else
+		{
+			empModel.insert(emp,function(status){
+				console.log(status);
+				if(status)
+				{
+					res.redirect('/login');
+				}
+				else
+				{
+					res.send("Something went wrong! <a href="+"/admin/addEmployee"+">Try Again</a>");
+				}
+			});
+		}
+	}
 });
 
-router.get('/empList',function (req,res){
-    res.render('admin/empList');
+router.get('/viewEmployees',function (req,res){
+	
+	empModel.getAll(function(result){
+		console.log(result);
+		if(result.length > 0)
+		{
+			res.render('admin/viewEmployees',{list: result});
+		}
+		else
+		{
+			res.render('admin/viewEmployees',{list: null});
+		}
+	});
 });
 
 router.get('/update',function (req,res){
