@@ -1,5 +1,5 @@
 var express = require('express');
-//var adminModel = require.main.require('./models/adminModel');
+var adminModel = require('../models/adminModel');
 var router = express.Router();
 
 router.get('/',function (req,res){
@@ -11,15 +11,18 @@ router.post('/',function (req,res){
         username: req.body.username,
         password: req.body.password
     };
-
-    if(admin.username==admin.password)
-    {
-        res.redirect('/admin');
-    }
-	else
-	{
-		res.send("error");
-	}
+	
+	adminModel.validate(admin,function(result){
+		if(result)
+		{
+			req.session.aid = result.id;
+			res.redirect('/admin');
+		}
+		else
+		{
+			res.send("Invalid username or password. <a href="+"/admin"+">Try Again</a>");
+		}
+	});
 });
 
 module.exports = router;
