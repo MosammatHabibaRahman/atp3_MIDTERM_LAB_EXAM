@@ -69,21 +69,60 @@ router.get('/viewEmployees',function (req,res){
 		}
 		else
 		{
-			res.render('admin/viewEmployees',{list: null});
+			res.send("Something went wrong! <a href="+"/admin"+">Back</a>");
 		}
 	});
 });
 
-router.get('/update',function (req,res){
-    res.render('admin/update');
+router.get('/update/:id',function (req,res){
+    var id = req.params.id;
+	console.log(id);
+	empModel.get(id, function(result){
+		if(result)
+		{
+			res.render('admin/update',{info: result});
+		}
+		else
+		{
+			res.send("Something went wrong! <a href="+"/admin/viewEmployees"+">Back</a>");
+		}
+	});});
+
+router.get('/delete/:id', function(req, res){
+	var id = req.params.id;
+	console.log(id);
+	empModel.get(id, function(result){
+		if(result)
+		{
+			res.render('admin/delete',{info: result});
+		}
+		else
+		{
+			res.send("Something went wrong! <a href="+"/admin/viewEmployees"+">Back</a>");
+		}
+	});
 });
 
-router.get('/delete',function (req,res){
-    res.render('admin/delete');
-});
-
-router.get('/logout',function (req,res){
-    res.redirect('login');
+router.post('/delete/:id', function(req, res){
+	var id = req.params.id;
+	if(req.body.no)
+	{
+		res.redirect('/admin/viewEmployees');
+	}
+	else
+	{
+		empModel.delete(id, function(status){
+			console.log(status);
+			if(status)
+			{
+				res.redirect('/admin/viewEmployees');
+			}
+			else
+			{
+				res.send("Something went wrong! <a href="+"/admin/viewEmployees"+">Back</a>");
+			}
+		});
+	}
 });
 
 module.exports = router;
